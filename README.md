@@ -15,4 +15,4 @@ achieve an impressive speedup of a search process when other
 efficient search techniques may not be available.
 
 This code was written using this Matlab's code by user "ankit dixit":
-[a link](http://www.mathworks.com/matlabcentral/fileexchange/45057-adaptive-kmeans-clustering-for-color-and-gray-image)
+[link](http://www.mathworks.com/matlabcentral/fileexchange/45057-adaptive-kmeans-clustering-for-color-and-gray-image)
