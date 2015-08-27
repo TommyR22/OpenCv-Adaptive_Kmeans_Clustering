@@ -19,6 +19,5 @@ This code was written using this Matlab's code by user "ankit dixit":
 
 
 #Before
-![Alt text](http://it.tinypic.com/r/33nkdnp/8)
-
+![alt text](segTrackv2/JPEGImages/CSI/CSY_NY.jpg "Original Image")
 #After
