@@ -1,10 +1,12 @@
 //
-//  main.cpp
+//  adaptive_kmeans.cpp
 //  Project
 //
-//  Created by Tommaso Ruscica on 20/07/15.
+//  Created by Tommaso Ruscica on 27/08/15.
 //  Copyright (c) 2015 Tommaso Ruscica. All rights reserved.
 //
+
+#include "adaptive_kmeans.h"
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <vector>
@@ -19,54 +21,6 @@ using namespace std;
 using namespace cv;
 
 
-void Adaptive_Kmeans(std::vector <Mat> images);
-void ColorClustering(std::vector <Mat> images);
-
-
-int main(int argc, const char * argv[]) {
-    
-    //path image's directory
-    string directoryName = "/Users/TommyR22/Desktop/SegTrackv2/JPEGImages/frog/";
-    //string directoryName = "/Users/TommyR22/Desktop/videos/penguin/images/";
-    
-    //path's vector of images in directoryName
-    std::vector <string> path_images;
-    //Mat's vector of images in directoryName
-    std::vector <Mat> images;
-    
-    DIR *dir;
-    dir = opendir(directoryName.c_str());
-    string imgName;
-    struct dirent *ent;
-    
-    //loop for read all images in the directoryName
-    if (dir != NULL) {
-        while ((ent = readdir (dir)) != NULL) {
-            imgName= ent->d_name;
-            //read file images except OS's files like "." , ".." , "DS_Store"
-            if(imgName.compare(".")!= 0 && imgName.compare("..")!= 0 && imgName.compare(".DS_Store")!= 0)
-            {
-                string path;
-                path.append(directoryName);
-                path.append(imgName);
-                Mat image= imread(path);
-                images.push_back(image);
-                path_images.push_back(path);
-                //cout << path << endl;
-            }
-        }
-        closedir (dir);
-    }  else {
-        cout<<"Directory not present"<<endl;
-    }
-    cout << "images in vector: "+ to_string(images.size()) << endl;
-    
-    //Algorithm Adaptive K-Means
-    Adaptive_Kmeans(images);
-    
-    
-    return 0;
-}
 
 
 void Adaptive_Kmeans(vector <Mat> images){
@@ -85,7 +39,7 @@ void Adaptive_Kmeans(vector <Mat> images){
 void ColorClustering(vector <Mat> images){
     //TODO loop single image in vector "images"
     vector<Vec3f> center;
-
+    
     //get 3 channels from image and store in a Mat
     vector<Mat> array_color;
     split(images[0],array_color);
@@ -233,7 +187,7 @@ void ColorClustering(vector <Mat> images){
                 vettore_green=vettore_green3;
                 vettore_blue=vettore_blue3;
                 //cout<<"SIZE_ARRAY: "<<vettore_red.size()<<endl;
-
+                
                 //Certer vector
                 center.push_back({ new_seed[0],new_seed[1],new_seed[2] });
                 //cout<< center.size() <<endl;
@@ -272,7 +226,7 @@ void ColorClustering(vector <Mat> images){
     vector<int> idx;
     vector<double> centers_idx=centers;
     sort(centers.begin(), centers.end());
-
+    
     int k=1;
     for(int i=0;i<centers.size();i++){
         double temp=centers[i];
@@ -286,7 +240,7 @@ void ColorClustering(vector <Mat> images){
     
     //cout<< "IDX"<<endl;
     //for(int i=0; i<idx.size(); i++){
-        //cout << idx[i] << " ";
+    //cout << idx[i] << " ";
     //}
     //cout<<endl;
     
@@ -303,10 +257,10 @@ void ColorClustering(vector <Mat> images){
         adjacent_difference(centers.begin(), centers.end(), new_centers.begin());
         new_centers.erase(new_centers.begin()+0);
         
-    //for(i=0; i<centers.size(); i++){
+        //for(i=0; i<centers.size(); i++){
         //cout << new_centers[i] << " ";
-    //cout<< endl;
-    //}
+        //cout<< endl;
+        //}
         
         //Findout Minimum distance between two cluster Centers
         //Discard Cluster centers less than distance
@@ -326,7 +280,7 @@ void ColorClustering(vector <Mat> images){
                 a.push_back(0);
             }
         }
-    
+        
         for(int i=0 ; i < centers.size() ; i++){
             if(a[i]==0 ){
                 centers_temp.push_back(centers[i]);
@@ -335,17 +289,17 @@ void ColorClustering(vector <Mat> images){
         centers.clear();
         centers=centers_temp;
         centers_temp.clear();
-    
+        
         //nnz function
         total=0;
         for(int i=0;i<a.size();i++){
             total+=a[i];
         }
         a.clear();
-
+        
         if(total==0){
             //for(i=0; i<new_centers.size(); i++)
-                //cout << new_centers[i] << " ";
+            //cout << new_centers[i] << " ";
             //cout<< endl;
             break;
         }
@@ -364,26 +318,26 @@ void ColorClustering(vector <Mat> images){
         cout << center[i] << " ";
     }
     cout<<endl;
-
+    
     cout<< "CENTERS"<<endl;
     for(i=0; i<center.size(); i++){
         cout << centers[i] << " ";
     }
     cout<<endl;
-
+    
     vector<float> distred;
     vector<float> distgreen;
     vector<float> distblue;
-
+    
     float distance[dim_row][center.size()];
-
+    
     //Find distance between center and pixel value.
     for(int i=0;i<center.size();i++){
         for(int x=0;x<dim_row;x++){
             distred.push_back(pow(array.at<uchar>(x,2)-center[i][0],2));
             distgreen.push_back(pow(array.at<uchar>(x,1)-center[i][1],2));
             distblue.push_back(pow(array.at<uchar>(x,0)-center[i][2],2));
-
+            
             distance[x][i]=sqrt(distred[0]+distgreen[0]+distblue[0]);
             distred.clear();
             distgreen.clear();
@@ -414,21 +368,44 @@ void ColorClustering(vector <Mat> images){
     }
     
     //for(int i=0;i<dim_row;i++){
-        //if(label[i]==5){
-            //x=x+1;
-        //}
+    //if(label[i]==5){
+    //x=x+1;
+    //}
     //}
     //cout << x << endl;
     
     //reshape image with each pixel labelled
     Mat label_final = Mat(label).reshape(0,image_rows);
-
-    cout<<label_final.rows<<endl;
-    cout<<label_final.cols<<endl;
     
+    //cout<<label_final.rows<<endl;
+    //cout<<label_final.cols<<endl;
     
-    //imshow( "Display window", label_final );
-    //waitKey(0);
-
-
+    //Convert Mat int to float
+    Mat_<float> image_float;
+    label_final.convertTo(image_float,CV_32F);
+    
+    //cout<<image_clustered.rows<<endl;
+    //cout<<image_clustered.cols<<endl;
+    
+    //--------------------------------------
+    //Looking for max and min value in Mat
+    //Initialize m
+    double minVal;
+    double maxVal;
+    Point minLoc;
+    Point maxLoc;
+    minMaxLoc( image_float, &minVal, &maxVal, &minLoc, &maxLoc );
+    cout << "min val : " << minVal << endl;
+    cout << "max val: " << maxVal << endl;
+    //--------------------------------------
+    
+    //create and display Mat with clusters in grayscale
+    Mat img=image_float/maxVal;
+    //cout<<img.rows<<endl;
+    //cout<<img.cols<<endl;
+    
+    imshow( "Display window", img );
+    waitKey(0);
+    //MAT/maxval
+    
 }
