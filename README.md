@@ -21,4 +21,4 @@ This code was written using this Matlab's code by user "ankit dixit":
 #Before
 ![alt text](SegTrackv2/JPEGImages/CSI/CSI_NY.jpg "Original Image")
 #After
-![alt text](SegTrackv2/JPEGImages/result.jpg "Result Image")
+![alt text](SegTrackv2/result.png "Result Image")
