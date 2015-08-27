@@ -21,7 +21,7 @@ using namespace std;
 using namespace cv;
 
 
-
+void ColorClustering(std::vector <cv::Mat> images);
 
 void Adaptive_Kmeans(vector <Mat> images){
     //check image's color
