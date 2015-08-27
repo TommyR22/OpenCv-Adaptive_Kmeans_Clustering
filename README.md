@@ -16,3 +16,9 @@ efficient search techniques may not be available.
 
 This code was written using this Matlab's code by user "ankit dixit":
 [link](http://www.mathworks.com/matlabcentral/fileexchange/45057-adaptive-kmeans-clustering-for-color-and-gray-image)
+
+
+#Before
+![Alt text](http://it.tinypic.com/r/33nkdnp/8)
+
+#After
