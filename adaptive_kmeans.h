@@ -15,11 +15,6 @@
 #include <vector>
 
 
-using namespace std;
-using namespace cv;
-
 #endif /* defined(__Project__adaptive_kmeans__) */
 
-
-void Adaptive_Kmeans(std::vector <Mat> images);
-void ColorClustering(std::vector <Mat> images);
+void Adaptive_Kmeans(std::vector <cv::Mat> images);
