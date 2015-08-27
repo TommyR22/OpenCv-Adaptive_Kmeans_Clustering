@@ -406,6 +406,5 @@ void ColorClustering(vector <Mat> images){
     
     imshow( "Display window", img );
     waitKey(0);
-    //MAT/maxval
     
 }
