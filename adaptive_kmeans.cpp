@@ -150,7 +150,7 @@ void ColorClustering(vector <Mat> images){
             //cout<<"------"<<endl;
             
             //exit from second while loop if new_seed is NaN(not a number)
-            if(new_seed[0]==0 | new_seed[1]==0 | new_seed[2]==0){
+            if(isnan(new_seed[0]) | isnan(new_seed[1]) | isnan(new_seed[2])){
                 //cout<< "NaN" <<endl;
                 break;
             }
@@ -222,27 +222,15 @@ void ColorClustering(vector <Mat> images){
         centers.push_back(c);
         
     }
-    //Sort Centers
-    vector<int> idx;
-    vector<double> centers_idx=centers;
-    sort(centers.begin(), centers.end());
     
-    int k=1;
-    for(int i=0;i<centers.size();i++){
-        double temp=centers[i];
-        //cout<<temp<<endl;
-        for(int x=0;x<centers_idx.size();x++){
-            if(temp==centers_idx[x]){
-                idx.push_back(k+x);
-            }
-        }
+    //MAP centers,center
+    map<double,Vec3f> map_centers;
+    for(int i =0; i<center.size();++i){            
+        map_centers[centers[i]] = {center[i][0],center[i][1],center[i][2]};
     }
-    
-    //cout<< "IDX"<<endl;
-    //for(int i=0; i<idx.size(); i++){
-    //cout << idx[i] << " ";
-    //}
-    //cout<<endl;
+
+    //Sort Centers
+    sort(centers.begin(), centers.end());
     
     
     int intercluster=25;
@@ -255,7 +243,7 @@ void ColorClustering(vector <Mat> images){
         //Find out Difference between two consecutive Centers
         //adjacent_difference(first,last,results)
         adjacent_difference(centers.begin(), centers.end(), new_centers.begin());
-        new_centers.erase(new_centers.begin()+0);
+        //new_centers.erase(new_centers.begin()+0);
         
         //for(i=0; i<centers.size(); i++){
         //cout << new_centers[i] << " ";
@@ -264,20 +252,21 @@ void ColorClustering(vector <Mat> images){
         
         //Findout Minimum distance between two cluster Centers
         //Discard Cluster centers less than distance
-        int k=0;
         for(int i=0;i<centers.size();i++){
-            if(new_centers[i]<intercluster){
-                a.push_back(1);
-                if(k==0){
-                    //center.erase(center.begin()+i);
-                    idx.erase(idx.begin()+i);
+                if(i==0){
+                    a.push_back(0);
                 }else{
-                    //center.erase(center.begin()+i-k);
-                    idx.erase(idx.begin()+i-k);
+                    if(new_centers[i]<intercluster){
+                        a.push_back(1);
+                    }else{
+                        a.push_back(0);
+                    }
                 }
-                k++;
-            }else{
-                a.push_back(0);
+            }
+            
+        for(int i=0 ; i < centers.size() ; i++){
+            if(a[i]==0 ){
+                centers_temp.push_back(centers[i]);                
             }
         }
         
@@ -307,9 +296,8 @@ void ColorClustering(vector <Mat> images){
     
     
     vector<Vec3f> center_temp;
-    for(int i=0;i<idx.size();i++){
-        int k=idx[i];
-        center_temp.push_back({ center[k-1][0], center[k-1][1], center[k-1][2] });
+    for(int i=0;i<centers.size();i++){
+        center_temp.push_back(map_centers[centers[i]]);
     }
     center=center_temp;
     
